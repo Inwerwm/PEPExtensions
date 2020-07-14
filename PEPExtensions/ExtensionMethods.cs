@@ -93,6 +93,7 @@ namespace PEPExtensions
         /// <summary>
         /// 「名前 = 値」の形で出力する
         /// </summary>
+        /// <param name="value">値</param>
         /// <param name="name">名前</param>
         public static string ToStringName(this object value, string name)
         {
@@ -102,6 +103,7 @@ namespace PEPExtensions
         /// <summary>
         /// 「名前 = 値↲」の形で出力する
         /// </summary>
+        /// <param name="value">値</param>
         /// <param name="name">名前</param>
         public static string ToStringNL(this object value, string name)
         {
@@ -275,7 +277,7 @@ namespace PEPExtensions
         /// <summary>
         /// 面を構成する頂点のUV座標を表示する文字列を返す
         /// </summary>
-        /// <param name="v">表示する面</param>
+        /// <param name="f">表示する面</param>
         /// <returns>"(U座標, V座標), (U座標, V座標), (U座標, V座標)"</returns>
         public static string PrintUV(this IPXFace f) => $"{f.Vertex1.UV.Print()}, {f.Vertex2.UV.Print()}, {f.Vertex3.UV.Print()}";
     }

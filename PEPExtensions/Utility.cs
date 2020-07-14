@@ -159,6 +159,10 @@ namespace PEPExtensions
             SetVertexWeights(GetWeights(vertex), ref vertex);
         }
 
+        /// <summary>
+        /// 頂点のウェイトを除去する
+        /// </summary>
+        /// <param name="vertex">対象頂点</param>
         public static void ClearVertexWeight(ref IPXVertex vertex)
         {
             vertex.Bone1 = null;
