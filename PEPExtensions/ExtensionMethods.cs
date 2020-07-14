@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace PEPExtensions
 {
+    /// <summary>
+    /// 拡張メソッド
+    /// </summary>
     public static class ExtensionMethods
     {
         /// <summary>
@@ -39,14 +42,25 @@ namespace PEPExtensions
             return i.CompareTo(lower) * upper.CompareTo(i) > 0;
         }
 
+        /// <summary>
+        /// 区間種別
+        /// </summary>
         public enum Interval
         {
+            /// <summary>
+            /// 開区間
+            /// </summary>
             Open,
+            /// <summary>
+            /// 閉区間
+            /// </summary>
             Close
         }
 
         /// <summary>
         /// 指定した区間の範囲内であるかを判断します。
+        /// 閉区間：自身を含む
+        /// 開区間：自身を含まない
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="i"></param>
@@ -94,52 +108,110 @@ namespace PEPExtensions
             return $"{name} = {value.ToStringLine()}";
         }
 
+        /// <summary>
+        /// ベクトルの座標を配列<c>float[]</c>に変換する
+        /// </summary>
+        /// <param name="v">変換対象ベクトル</param>
+        /// <returns>座標値の配列</returns>
         public static float[] ToArray(this V3 v)
         {
             return new float[] { v.X, v.Y, v.Z };
         }
 
+        /// <summary>
+        /// ベクトルの座標を配列<c>float[]</c>に変換する
+        /// </summary>
+        /// <param name="v">変換対象ベクトル</param>
+        /// <returns>座標値の配列</returns>
         public static float[] ToArray(this V2 v)
         {
             return new float[] { v.X, v.Y };
         }
 
+        /// <summary>
+        /// ベクトルの座標を<c>PointF</c>に変換する
+        /// </summary>
+        /// <param name="vertex">変換対象ベクトル</param>
+        /// <returns>点</returns>
         public static PointF ToPointF(this V2 vertex)
         {
             return new PointF(vertex.X, vertex.Y);
         }
 
+        /// <summary>
+        /// ベクトルの座標を拡縮して<c>PointF</c>に変換する
+        /// </summary>
+        /// <param name="vertex">変換対象ベクトル</param>
+        /// <param name="Width">横倍率</param>
+        /// <param name="Height">縦倍率</param>
+        /// <returns></returns>
         public static PointF ToPointF(this V2 vertex, int Width, int Height)
         {
             return new PointF(vertex.X * Width, vertex.Y * Height);
         }
 
-        public static PointF[] ToPointF(this IPXFace face)
+        /// <summary>
+        /// 面を構成する頂点のUV座標の配列に変換する
+        /// </summary>
+        /// <param name="face">変換対象面</param>
+        /// <returns>点の配列</returns>
+        public static PointF[] UVToPointF(this IPXFace face)
         {
             return new PointF[3] { face.Vertex1.UV.ToPointF(), face.Vertex2.UV.ToPointF(), face.Vertex3.UV.ToPointF() };
         }
 
-        public static PointF[] ToPointF(this IPXFace face, int Width, int Height)
+        /// <summary>
+        /// 面を構成する頂点のUV座標の配列に拡縮して変換する
+        /// </summary>
+        /// <param name="face">変換対象面</param>
+        /// <param name="Width">横倍率</param>
+        /// <param name="Height">縦倍率</param>
+        /// <returns>点の配列</returns>
+        public static PointF[] UVToPointF(this IPXFace face, int Width, int Height)
         {
             return new PointF[3] { face.Vertex1.UV.ToPointF(Width, Height), face.Vertex2.UV.ToPointF(Width, Height), face.Vertex3.UV.ToPointF(Width, Height) };
         }
 
+        /// <summary>
+        /// ベクトルの座標を<c>Point</c>に変換する
+        /// </summary>
+        /// <param name="vertex">変換対象ベクトル</param>
+        /// <returns>点</returns>
         public static Point ToPoint(this V2 vertex)
         {
             return new Point((int)Math.Round(vertex.X, MidpointRounding.AwayFromZero), (int)Math.Round(vertex.Y, MidpointRounding.AwayFromZero));
         }
 
+        /// <summary>
+        /// ベクトルの座標を拡縮して<c>Point</c>に変換する
+        /// </summary>
+        /// <param name="vertex">変換対象ベクトル</param>
+        /// <param name="Width">横倍率</param>
+        /// <param name="Height">縦倍率</param>
+        /// <returns></returns>
         public static Point ToPoint(this V2 vertex, int Width, int Height)
         {
             return new Point((int)Math.Round(vertex.X * Width, MidpointRounding.AwayFromZero), (int)Math.Round(vertex.Y * Height, MidpointRounding.AwayFromZero));
         }
 
-        public static Point[] ToPoint(this IPXFace face)
+        /// <summary>
+        /// 面を構成する頂点のUV座標の配列に変換する
+        /// </summary>
+        /// <param name="face">変換対象面</param>
+        /// <returns>点の配列</returns>
+        public static Point[] UVToPoint(this IPXFace face)
         {
             return new Point[3] { face.Vertex1.UV.ToPoint(), face.Vertex2.UV.ToPoint(), face.Vertex3.UV.ToPoint() };
         }
 
-        public static Point[] ToPoint(this IPXFace face, int Width, int Height)
+        /// <summary>
+        /// 面を構成する頂点のUV座標の配列に拡縮して変換する
+        /// </summary>
+        /// <param name="face">変換対象面</param>
+        /// <param name="Width">横倍率</param>
+        /// <param name="Height">縦倍率</param>
+        /// <returns>点の配列</returns>
+        public static Point[] UVToPoint(this IPXFace face, int Width, int Height)
         {
             return new Point[3] { face.Vertex1.UV.ToPoint(Width, Height), face.Vertex2.UV.ToPoint(Width, Height), face.Vertex3.UV.ToPoint(Width, Height) };
         }
@@ -159,9 +231,24 @@ namespace PEPExtensions
         /// </summary>
         public static int Round(this decimal value) => (int)Math.Round(value, MidpointRounding.AwayFromZero);
 
+        /// <summary>
+        /// 点の座標を表示する文字列を返す
+        /// </summary>
+        /// <param name="point">表示する点</param>
+        /// <returns>"(X座標, Y座標)"</returns>
         public static string Print(this Point point) => $"({point.X}, {point.Y})";
+        /// <summary>
+        /// 点の座標を表示する文字列を返す
+        /// </summary>
+        /// <param name="point">表示する点</param>
+        /// <returns>"(X座標, Y座標)"</returns>
         public static string Print(this PointF point) => $"({point.X}, {point.Y})";
 
+        /// <summary>
+        /// 面を構成する頂点のUV座標を返す
+        /// </summary>
+        /// <param name="face">対象面</param>
+        /// <returns>2次元ベクトル配列</returns>
         public static V2[] ExtructUV(this IPXFace face)
         {
             return new V2[]
@@ -172,8 +259,24 @@ namespace PEPExtensions
             };
         }
 
+        /// <summary>
+        /// ベクトルの座標を表示する文字列を返す
+        /// </summary>
+        /// <param name="v">表示する点</param>
+        /// <returns>"(X座標, Y座標)"</returns>
         public static string Print(this V2 v) => $"({v.X}, {v.Y})";
+        /// <summary>
+        /// ベクトルの座標を表示する文字列を返す
+        /// </summary>
+        /// <param name="v">表示する点</param>
+        /// <returns>"(X座標, Y座標, Z座標)"</returns>
         public static string Print(this V3 v) => $"({v.X}, {v.Y}), {v.Z}";
+
+        /// <summary>
+        /// 面を構成する頂点のUV座標を表示する文字列を返す
+        /// </summary>
+        /// <param name="v">表示する面</param>
+        /// <returns>"(U座標, V座標), (U座標, V座標), (U座標, V座標)"</returns>
         public static string PrintUV(this IPXFace f) => $"{f.Vertex1.UV.Print()}, {f.Vertex2.UV.Print()}, {f.Vertex3.UV.Print()}";
     }
 }

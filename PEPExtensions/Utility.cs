@@ -1,5 +1,6 @@
 ﻿using PEPlugin;
 using PEPlugin.Pmx;
+using PEPlugin.SDX;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,9 @@ using System.Windows.Forms;
 
 namespace PEPExtensions
 {
+    /// <summary>
+    /// PMXEditorプラグイン用便利メソッド
+    /// </summary>
     public static class Utility
     {
         /// <summary>
@@ -167,6 +171,11 @@ namespace PEPExtensions
             vertex.Weight4 = 0;
         }
 
+        /// <summary>
+        /// 面に含まれる頂点を返す
+        /// </summary>
+        /// <param name="face">対象面</param>
+        /// <returns>包含頂点リスト</returns>
         public static List<IPXVertex> GetFaceVertices(IPXFace face)
         {
             var vertices = new List<IPXVertex>();
@@ -176,16 +185,22 @@ namespace PEPExtensions
             return vertices;
         }
 
-        public static List<IPXVertex> GetMaterialVertices(IPXMaterial material)
+
+        /// <summary>
+        /// 材質に属する面を構成する全ての頂点を取得する
+        /// </summary>
+        /// <param name="material">対象材質</param>
+        /// <returns>頂点コレクション</returns>
+        public static IEnumerable<IPXVertex> GetMaterialVertices(IPXMaterial material)
         {
-            var vertices = new List<IPXVertex>();
-            foreach (var f in material.Faces)
-            {
-                vertices.AddRange(GetFaceVertices(f));
-            }
-            return vertices.Distinct().ToList();
+            return material.Faces.SelectMany(f => GetFaceVertices(f)).Distinct();
         }
 
+        /// <summary>
+        /// 例外表示用複合ダイアログボックスを表示する
+        /// </summary>
+        /// <param name="ex">表示対象例外オブジェクト</param>
+        /// <returns>押下されたボタン種類</returns>
         public static DialogResult ShowException(Exception ex)
         {
             // Get reference to the dialog type. 
@@ -202,6 +217,33 @@ namespace PEPExtensions
 
             // Display dialog. 
             return dialog.ShowDialog();
+        }
+
+        /// <summary>
+        /// 指定された頂点コレクションの空間的範囲を返す
+        /// </summary>
+        /// <param name="vertices"></param>
+        /// <returns></returns>
+        public static (V3 min, V3 max) GetBoundingBox(IEnumerable<IPXVertex> vertices)
+        {
+            if (!vertices.Any())
+                throw new ArgumentOutOfRangeException("頂点が入っていないリストが境界箱生成メソッドに渡されました。");
+
+            (V3 min, V3 max) bound = (vertices.First().Position, vertices.First().Position);
+
+            // たぶん集計系Linqは即時評価されるので一括ループで集計せねば遅い
+            foreach (var v in vertices)
+            {
+                bound.min.X = bound.min.X > v.Position.X ? v.Position.X : bound.min.X;
+                bound.min.Y = bound.min.Y > v.Position.Y ? v.Position.Y : bound.min.Y;
+                bound.min.Z = bound.min.Z > v.Position.Z ? v.Position.Z : bound.min.Z;
+
+                bound.max.X = bound.max.X < v.Position.X ? v.Position.X : bound.max.X;
+                bound.max.Y = bound.max.Y < v.Position.Y ? v.Position.Y : bound.max.Y;
+                bound.max.Z = bound.max.Z < v.Position.Z ? v.Position.Z : bound.max.Z;
+            }
+
+            return bound;
         }
     }
 }
