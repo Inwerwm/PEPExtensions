@@ -280,5 +280,30 @@ namespace PEPExtensions
         /// <param name="f">表示する面</param>
         /// <returns>"(U座標, V座標), (U座標, V座標), (U座標, V座標)"</returns>
         public static string PrintUV(this IPXFace f) => $"{f.Vertex1.UV.Print()}, {f.Vertex2.UV.Print()}, {f.Vertex3.UV.Print()}";
+
+        /// <summary>
+        /// ベクトルにスカラーをかける
+        /// </summary>
+        /// <typeparam name="T">!! *演算子が実装されていること!! dynamicにキャストされる</typeparam>
+        /// <param name="v">ベクトル</param>
+        /// <param name="num">数値 *演算子が実装されている必要がある</param>
+        public static void Times<T>(this V2 v, T num)
+        {
+            v.X *= (dynamic)num;
+            v.Y *= (dynamic)num;
+        }
+
+        /// <summary>
+        /// ベクトルにスカラーをかける
+        /// </summary>
+        /// <typeparam name="T">!! *演算子が実装されていること!! dynamicにキャストされる</typeparam>
+        /// <param name="v">ベクトル</param>
+        /// <param name="num">数値 *演算子が実装されている必要がある</param>
+        public static void Times<T>(this V3 v, T num)
+        {
+            v.X *= (dynamic)num;
+            v.Y *= (dynamic)num;
+            v.Z *= (dynamic)num;
+        }
     }
 }
