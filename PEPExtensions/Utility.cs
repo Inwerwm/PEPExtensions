@@ -215,12 +215,21 @@ namespace PEPExtensions
             var dialog = (Form)Activator.CreateInstance(dialogType, new PropertyGrid());
 
             // Populate relevant properties on the dialog instance. 
-            dialog.Text = "例外発生";
+            dialog.Text = $"例外発生:{ex.GetType().Name}";
             dialogType.GetProperty("Details").SetValue(dialog, ex.StackTrace, null);
             dialogType.GetProperty("Message").SetValue(dialog, ex.Message, null);
 
             // Display dialog. 
             return dialog.ShowDialog();
+        }
+
+        /// <summary>
+        /// ExceptionクラスのMessageプロパティを知らせるダイアログボックスを表示する
+        /// </summary>
+        /// <param name="ex">表示対象例外オブジェクト</param>
+        public static void ShowExceptionMessage(Exception ex)
+        {
+            MessageBox.Show(ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         /// <summary>
@@ -233,7 +242,7 @@ namespace PEPExtensions
             if (!vertices.Any())
                 throw new ArgumentOutOfRangeException("頂点が入っていないリストが境界箱生成メソッドに渡されました。");
 
-            (V3 min, V3 max) bound = (vertices.First().Position, vertices.First().Position);
+            (V3 min, V3 max) bound = (vertices.First().Position.Clone(), vertices.First().Position.Clone());
 
             // たぶん集計系Linqは即時評価されるので一括ループで集計せねば遅い
             foreach (var v in vertices)
