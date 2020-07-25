@@ -1,5 +1,4 @@
 ﻿using PEPlugin.Pmx;
-using PEPlugin.SDX;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -111,46 +110,11 @@ namespace PEPExtensions
         }
 
         /// <summary>
-        /// ベクトルの座標を配列<c>float[]</c>に変換する
+        /// 真偽値を○✕に変換
         /// </summary>
-        /// <param name="v">変換対象ベクトル</param>
-        /// <returns>座標値の配列</returns>
-        public static float[] ToArray(this V3 v)
-        {
-            return new float[] { v.X, v.Y, v.Z };
-        }
-
-        /// <summary>
-        /// ベクトルの座標を配列<c>float[]</c>に変換する
-        /// </summary>
-        /// <param name="v">変換対象ベクトル</param>
-        /// <returns>座標値の配列</returns>
-        public static float[] ToArray(this V2 v)
-        {
-            return new float[] { v.X, v.Y };
-        }
-
-        /// <summary>
-        /// ベクトルの座標を<c>PointF</c>に変換する
-        /// </summary>
-        /// <param name="vertex">変換対象ベクトル</param>
-        /// <returns>点</returns>
-        public static PointF ToPointF(this V2 vertex)
-        {
-            return new PointF(vertex.X, vertex.Y);
-        }
-
-        /// <summary>
-        /// ベクトルの座標を拡縮して<c>PointF</c>に変換する
-        /// </summary>
-        /// <param name="vertex">変換対象ベクトル</param>
-        /// <param name="Width">横倍率</param>
-        /// <param name="Height">縦倍率</param>
-        /// <returns></returns>
-        public static PointF ToPointF(this V2 vertex, int Width, int Height)
-        {
-            return new PointF(vertex.X * Width, vertex.Y * Height);
-        }
+        /// <param name="val">真偽値</param>
+        /// <returns>true:○, false:✕</returns>
+        public static string ToSign(this bool val) => val ? "○" : "✕";
 
         /// <summary>
         /// 面を構成する頂点のUV座標の配列に変換する
@@ -172,28 +136,6 @@ namespace PEPExtensions
         public static PointF[] UVToPointF(this IPXFace face, int Width, int Height)
         {
             return new PointF[3] { face.Vertex1.UV.ToPointF(Width, Height), face.Vertex2.UV.ToPointF(Width, Height), face.Vertex3.UV.ToPointF(Width, Height) };
-        }
-
-        /// <summary>
-        /// ベクトルの座標を<c>Point</c>に変換する
-        /// </summary>
-        /// <param name="vertex">変換対象ベクトル</param>
-        /// <returns>点</returns>
-        public static Point ToPoint(this V2 vertex)
-        {
-            return new Point((int)Math.Round(vertex.X, MidpointRounding.AwayFromZero), (int)Math.Round(vertex.Y, MidpointRounding.AwayFromZero));
-        }
-
-        /// <summary>
-        /// ベクトルの座標を拡縮して<c>Point</c>に変換する
-        /// </summary>
-        /// <param name="vertex">変換対象ベクトル</param>
-        /// <param name="Width">横倍率</param>
-        /// <param name="Height">縦倍率</param>
-        /// <returns></returns>
-        public static Point ToPoint(this V2 vertex, int Width, int Height)
-        {
-            return new Point((int)Math.Round(vertex.X * Width, MidpointRounding.AwayFromZero), (int)Math.Round(vertex.Y * Height, MidpointRounding.AwayFromZero));
         }
 
         /// <summary>
@@ -237,73 +179,23 @@ namespace PEPExtensions
         /// 点の座標を表示する文字列を返す
         /// </summary>
         /// <param name="point">表示する点</param>
+        /// <param name="format">書式</param>
         /// <returns>"(X座標, Y座標)"</returns>
-        public static string Print(this Point point) => $"({point.X}, {point.Y})";
+        public static string Print(this Point point, string format = "") => $"({point.X.ToString(format)}, {point.Y.ToString(format)})";
         /// <summary>
         /// 点の座標を表示する文字列を返す
         /// </summary>
         /// <param name="point">表示する点</param>
+        /// <param name="format">書式</param>
         /// <returns>"(X座標, Y座標)"</returns>
-        public static string Print(this PointF point) => $"({point.X}, {point.Y})";
-
-        /// <summary>
-        /// 面を構成する頂点のUV座標を返す
-        /// </summary>
-        /// <param name="face">対象面</param>
-        /// <returns>2次元ベクトル配列</returns>
-        public static V2[] ExtructUV(this IPXFace face)
-        {
-            return new V2[]
-            {
-                face.Vertex1.UV,
-                face.Vertex2.UV,
-                face.Vertex3.UV
-            };
-        }
-
-        /// <summary>
-        /// ベクトルの座標を表示する文字列を返す
-        /// </summary>
-        /// <param name="v">表示する点</param>
-        /// <returns>"(X座標, Y座標)"</returns>
-        public static string Print(this V2 v) => $"({v.X}, {v.Y})";
-        /// <summary>
-        /// ベクトルの座標を表示する文字列を返す
-        /// </summary>
-        /// <param name="v">表示する点</param>
-        /// <returns>"(X座標, Y座標, Z座標)"</returns>
-        public static string Print(this V3 v) => $"({v.X}, {v.Y}), {v.Z}";
+        public static string Print(this PointF point, string format = "") => $"({point.X.ToString(format)}, {point.Y.ToString(format)})";
 
         /// <summary>
         /// 面を構成する頂点のUV座標を表示する文字列を返す
         /// </summary>
         /// <param name="f">表示する面</param>
+        /// <param name="format">書式</param>
         /// <returns>"(U座標, V座標), (U座標, V座標), (U座標, V座標)"</returns>
-        public static string PrintUV(this IPXFace f) => $"{f.Vertex1.UV.Print()}, {f.Vertex2.UV.Print()}, {f.Vertex3.UV.Print()}";
-
-        /// <summary>
-        /// ベクトルにスカラーをかける
-        /// </summary>
-        /// <typeparam name="T">!! *演算子が実装されていること!! dynamicにキャストされる</typeparam>
-        /// <param name="v">ベクトル</param>
-        /// <param name="num">数値 *演算子が実装されている必要がある</param>
-        public static void Times<T>(this V2 v, T num)
-        {
-            v.X *= (dynamic)num;
-            v.Y *= (dynamic)num;
-        }
-
-        /// <summary>
-        /// ベクトルにスカラーをかける
-        /// </summary>
-        /// <typeparam name="T">!! *演算子が実装されていること!! dynamicにキャストされる</typeparam>
-        /// <param name="v">ベクトル</param>
-        /// <param name="num">数値 *演算子が実装されている必要がある</param>
-        public static void Times<T>(this V3 v, T num)
-        {
-            v.X *= (dynamic)num;
-            v.Y *= (dynamic)num;
-            v.Z *= (dynamic)num;
-        }
+        public static string PrintUV(this IPXFace f, string format = "") => $"{f.Vertex1.UV.Print(format)}, {f.Vertex2.UV.Print(format)}, {f.Vertex3.UV.Print(format)}";
     }
 }
